@@ -1,0 +1,36 @@
+# ComfyRealtime workspace
+comfyRealtime/
+
+# ComfyUI base installation
+ComfyUI/
+
+# Python virtual environments
+venv/
+env/
+.env/
+
+# Conda environments
+.conda/
+
+# Python cache files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Model files
+*.safetensors
+*.ckpt
+*.pt
+*.pth
+
+# Logs
+*.log
+logs/
+
+# Output directories
+output/
+outputs/
+
+# System files
+.DS_Store
+Thumbs.db
