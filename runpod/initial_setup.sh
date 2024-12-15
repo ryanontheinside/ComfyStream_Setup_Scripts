@@ -78,6 +78,28 @@ else
     echo "ComfyUI-Manager already exists in second installation, skipping copy..."
 fi
 
+# Clone RealTimeNodes to first install
+echo "
+----------------------------------------
+📥 Installing ComfyUI RealTimeNodes...
+----------------------------------------"
+if [ ! -d "/workspace/ComfyUI/custom_nodes/ComfyUI_RealTimeNodes/.git" ]; then
+    git clone https://github.com/ryanontheinside/ComfyUI_RealTimeNodes.git /workspace/ComfyUI/custom_nodes/ComfyUI_RealTimeNodes
+else
+    echo "ComfyUI RealTimeNodes already exists in first installation, skipping clone..."
+fi
+
+# Copy RealTimeNodes to second install
+echo "
+----------------------------------------
+📋 Copying RealTimeNodes to second installation...
+----------------------------------------"
+if [ ! -d "/workspace/comfyRealtime/ComfyUI/custom_nodes/ComfyUI_RealTimeNodes" ]; then
+    cp -r /workspace/ComfyUI/custom_nodes/ComfyUI_RealTimeNodes /workspace/comfyRealtime/ComfyUI/custom_nodes/
+else
+    echo "ComfyUI RealTimeNodes already exists in second installation, skipping copy..."
+fi
+
 # Download model file
 echo "
 ----------------------------------------

@@ -86,6 +86,28 @@ Copying ComfyUI-Manager to second installation...
         Write-Host "ComfyUI-Manager already exists in second installation, skipping copy..."
     }
 
+    # Install RealTimeNodes to first install
+    Write-Host "
+    ------------------------------------------
+    Installing ComfyUI RealTimeNodes...
+    ------------------------------------------"
+    if (-not (Test-Path "$comfyUIPath\custom_nodes\ComfyUI_RealTimeNodes\.git")) {
+        git clone https://github.com/ryanontheinside/ComfyUI_RealTimeNodes.git "$comfyUIPath\custom_nodes\ComfyUI_RealTimeNodes"
+    } else {
+        Write-Host "ComfyUI RealTimeNodes already exists in first installation, skipping clone..."
+    }
+
+    # Copy RealTimeNodes to second install
+    Write-Host "
+    ------------------------------------------
+    Copying RealTimeNodes to second installation...
+    ------------------------------------------"
+    if (-not (Test-Path "$realtimePath\ComfyUI\custom_nodes\ComfyUI_RealTimeNodes")) {
+        Copy-Item -Path "$comfyUIPath\custom_nodes\ComfyUI_RealTimeNodes" -Destination "$realtimePath\ComfyUI\custom_nodes\" -Recurse
+    } else {
+        Write-Host "ComfyUI RealTimeNodes already exists in second installation, skipping copy..."
+    }
+
     # Download models if requested
     if ($DownloadModels) {
         Write-Host "
