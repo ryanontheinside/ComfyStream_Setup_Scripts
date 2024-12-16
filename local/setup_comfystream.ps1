@@ -4,6 +4,12 @@ param(
     [switch]$DownloadModels = $false
 )
 
+# Add this function at the beginning of your script
+function Test-NvidiaGPU {
+    $gpu = Get-WmiObject -Query "SELECT * FROM Win32_VideoController WHERE Name LIKE '%NVIDIA%'"
+    return $null -ne $gpu
+}
+
 $ErrorActionPreference = "Stop"
 
 try {
@@ -54,15 +60,16 @@ Cloning repositories...
         Write-Host "ComfyStream already exists, skipping clone..."
     }
 
-    # Create symbolic link for models
-    Write-Host "
-------------------------------------------
-Setting up models symlink...
-------------------------------------------"
-    if (Test-Path "$realtimePath\ComfyUI\models") {
-        Remove-Item "$realtimePath\ComfyUI\models" -Recurse -Force
-    }
-    New-Item -ItemType SymbolicLink -Path "$realtimePath\ComfyUI\models" -Target "$comfyUIPath\models"
+#Cloning repos as Admin is  suspicious to git.
+#     # Create symbolic link for models
+#     Write-Host "
+# ------------------------------------------
+# Setting up models symlink...
+# ------------------------------------------"
+#     if (Test-Path "$realtimePath\ComfyUI\models") {
+#         Remove-Item "$realtimePath\ComfyUI\models" -Recurse -Force
+#     }
+#     New-Item -ItemType SymbolicLink -Path "$realtimePath\ComfyUI\models" -Target "$comfyUIPath\models"
 
     # Install ComfyUI-Manager to first install
     Write-Host "
@@ -137,12 +144,27 @@ Setting up Python environments...
     conda create -n comfyui python=3.11 -y
     conda activate comfyui
 
+    
     # Install ComfyUI requirements in main installation
     Write-Host "
 ------------------------------------------
 Installing main ComfyUI requirements...
 ------------------------------------------"
     Set-Location $comfyUIPath
+
+
+    # Check for NVIDIA GPU and install appropriate PyTorch version
+    if (Test-NvidiaGPU) {
+        Write-Host "NVIDIA GPU detected. Installing CUDA-enabled PyTorch..."
+        conda install pytorch torchvision torchaudio pytorch-cuda -c pytorch -c nvidia -y
+    } else {
+        Write-Host "No NVIDIA GPU detected. Installing CPU-only PyTorch..."
+        conda install pytorch torchvision torchaudio cpuonly -c pytorch -y
+        Write-Host "
+        WARNING: Running ComfyUI without an NVIDIA GPU will be significantly slower.
+        Image generation may take several minutes or longer per image.
+        " -ForegroundColor Yellow
+    }
     pip install -r requirements.txt
     Set-Location "custom_nodes\ComfyUI-Manager"
     pip install -r requirements.txt
