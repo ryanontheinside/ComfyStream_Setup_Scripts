@@ -168,6 +168,10 @@ Installing main ComfyUI requirements...
         " -ForegroundColor Yellow
     }
     conda run -n comfyui pip install -r requirements.txt
+
+    conda deactivate
+    & "$env:USERPROFILE\miniconda3\shell\condabin\conda-hook.ps1"
+
     Set-Location "custom_nodes\ComfyUI-Manager"
     # Install ComfyStream
     Write-Host "
