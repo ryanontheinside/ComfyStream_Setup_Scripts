@@ -3,7 +3,7 @@ $condaPath = "$env:USERPROFILE\miniconda3"
 
 Write-Host "
 ========================================
-🔍 Checking Conda Installation...
+Checking Conda Installation...
 ========================================"
 
 # Check if conda exists in PATH or in default location
@@ -12,7 +12,12 @@ if (-not (Get-Command conda -ErrorAction SilentlyContinue) -and -not (Test-Path 
     
     # Download Miniconda
     $installerPath = "$env:TEMP\Miniconda3-latest-Windows-x86_64.exe"
-    Invoke-WebRequest -Uri "https://repo.anaconda.com/miniconda/Miniconda3-latest-Windows-x86_64.exe" -OutFile $installerPath
+    if (-not (Test-Path $installerPath)) {
+        Write-Host "Downloading Miniconda installer..."
+        Invoke-WebRequest -Uri "https://repo.anaconda.com/miniconda/Miniconda3-latest-Windows-x86_64.exe" -OutFile $installerPath
+    } else {
+        Write-Host "Miniconda installer already exists. Skipping download."
+    }
     
     # Install Miniconda silently
     Start-Process -FilePath $installerPath -ArgumentList "/S /D=$condaPath" -Wait
@@ -20,5 +25,5 @@ if (-not (Get-Command conda -ErrorAction SilentlyContinue) -and -not (Test-Path 
     # Add to PATH
     $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
 } else {
-    Write-Host "✅ Conda is already installed"
+    Write-Host "Conda is already installed"
 }

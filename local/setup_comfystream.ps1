@@ -4,7 +4,7 @@ param(
     [switch]$DownloadModels = $false
 )
 
-# Add this function at the beginning of your script
+# Get NVIDIA GPU information
 function Test-NvidiaGPU {
     $gpu = Get-WmiObject -Query "SELECT * FROM Win32_VideoController WHERE Name LIKE '%NVIDIA%'"
     return $null -ne $gpu
@@ -142,8 +142,10 @@ Setting up Python environments...
 ------------------------------------------"
     # Create comfyui environment
     conda create -n comfyui python=3.11 -y
+    & "$env:USERPROFILE\miniconda3\shell\condabin\conda-hook.ps1"
     conda activate comfyui
-
+    conda run -n comfyui python -m pip install --upgrade pip
+    conda run -n comfyui conda install pytorch torchvision torchaudio pytorch-cuda -c pytorch -c nvidia -y
     
     # Install ComfyUI requirements in main installation
     Write-Host "
@@ -156,34 +158,36 @@ Installing main ComfyUI requirements...
     # Check for NVIDIA GPU and install appropriate PyTorch version
     if (Test-NvidiaGPU) {
         Write-Host "NVIDIA GPU detected. Installing CUDA-enabled PyTorch..."
-        conda install pytorch torchvision torchaudio pytorch-cuda -c pytorch -c nvidia -y
+        & conda run -n comfyui conda install pytorch torchvision torchaudio pytorch-cuda -c pytorch -c nvidia -y
     } else {
         Write-Host "No NVIDIA GPU detected. Installing CPU-only PyTorch..."
-        conda install pytorch torchvision torchaudio cpuonly -c pytorch -y
+        & conda run -n comfyui conda install pytorch torchvision torchaudio cpuonly -c pytorch -y
         Write-Host "
         WARNING: Running ComfyUI without an NVIDIA GPU will be significantly slower.
         Image generation may take several minutes or longer per image.
         " -ForegroundColor Yellow
     }
-    pip install -r requirements.txt
-    Set-Location "custom_nodes\ComfyUI-Manager"
-    pip install -r requirements.txt
+    conda run -n comfyui pip install -r requirements.txt
 
     conda deactivate
+    & "$env:USERPROFILE\miniconda3\shell\condabin\conda-hook.ps1"
 
-    # Create and setup comfystream environment
-    conda create -n comfystream python=3.11 -y
-    conda activate comfystream
-    
+    Set-Location "custom_nodes\ComfyUI-Manager"
     # Install ComfyStream
     Write-Host "
 ------------------------------------------
 Installing ComfyStream...
 ------------------------------------------"
     Set-Location "$realtimePath\ComfyStream"
-    pip install .
-    pip install -r requirements.txt
-    python install.py --workspace "$realtimePath\ComfyUI"
+    # Create and setup comfystream environment
+    conda create -n comfystream python=3.11 -y
+    & "$env:USERPROFILE\miniconda3\shell\condabin\conda-hook.ps1"
+    conda activate comfystream
+    conda run -n comfystream pip install .
+    conda run -n comfystream pip install -r requirements.txt
+    conda run -n comfystream pip install twilio aiortc
+    conda run -n comfystream conda install pytorch-cuda -c pytorch -c nvidia -y
+    conda run -n comfystream python install.py --workspace "$realtimePath\ComfyUI"
 
     # Copy tensor utils
     Write-Host "
