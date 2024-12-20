@@ -154,7 +154,6 @@ Installing main ComfyUI requirements...
 ------------------------------------------"
     Set-Location $comfyUIPath
 
-
     # Check for NVIDIA GPU and install appropriate PyTorch version
     if (Test-NvidiaGPU) {
         Write-Host "NVIDIA GPU detected. Installing CUDA-enabled PyTorch..."
@@ -199,6 +198,7 @@ Copying tensor utils...
     }
 
     conda deactivate
+    & "$env:USERPROFILE\miniconda3\shell\condabin\conda-hook.ps1"
 
     Write-Host "
 ==========================================
