@@ -148,6 +148,80 @@ pip install -r requirements.txt
 cd custom_nodes/ComfyUI-Manager
 pip install -r requirements.txt
 
+# Function to install custom nodes and dependencies
+install_custom_nodes() {
+    echo "
+    ----------------------------------------
+    📥 Installing Additional Custom Nodes...
+    ----------------------------------------"
+
+    # Verify we're in comfystream environment
+    if [ "$CONDA_DEFAULT_ENV" != "comfystream" ]; then
+        echo "❌ Must be in comfystream environment! Current env: $CONDA_DEFAULT_ENV"
+        exit 1
+    fi
+    
+    # Install additional packages first
+    echo "Installing additional Python packages..."
+    pip install torch==2.5.1 torchvision torchaudio tqdm nvidia-ml-py==12.560.30 diffusers==0.30.1
+
+    CUSTOM_NODES_PATH="/workspace/comfyRealtime/ComfyUI/custom_nodes"
+
+    # Install ComfyUI-Depth-Anything-Tensorrt
+    if [ ! -d "$CUSTOM_NODES_PATH/ComfyUI-Depth-Anything-Tensorrt/.git" ]; then
+        git clone https://github.com/yuvraj108c/ComfyUI-Depth-Anything-Tensorrt.git "$CUSTOM_NODES_PATH/ComfyUI-Depth-Anything-Tensorrt"
+        cd "$CUSTOM_NODES_PATH/ComfyUI-Depth-Anything-Tensorrt"
+        pip install -r requirements.txt
+    fi
+
+    # Install ComfyUI-Misc-Effects
+    if [ ! -d "$CUSTOM_NODES_PATH/ComfyUI-Misc-Effects/.git" ]; then
+        git clone https://github.com/ryanontheinside/ComfyUI-Misc-Effects.git "$CUSTOM_NODES_PATH/ComfyUI-Misc-Effects"
+        cd "$CUSTOM_NODES_PATH/ComfyUI-Misc-Effects"
+        git checkout c6b360c78611134c3723388170475eb4898ff6b7
+    fi
+
+    # Install ComfyUI-SAM2-Realtime
+    if [ ! -d "$CUSTOM_NODES_PATH/ComfyUI-SAM2-Realtime/.git" ]; then
+        git clone https://github.com/pschroedl/ComfyUI-SAM2-Realtime.git "$CUSTOM_NODES_PATH/ComfyUI-SAM2-Realtime"
+        cd "$CUSTOM_NODES_PATH/ComfyUI-SAM2-Realtime"
+        git checkout 4f587443fb2808c4b5b303afcd7ec3ec3e0fbd08
+        pip install -r requirements.txt
+    fi
+
+    # Install ComfyUI-Florence2-Vision
+    if [ ! -d "$CUSTOM_NODES_PATH/ComfyUI-Florence2-Vision/.git" ]; then
+        git clone https://github.com/ad-astra-video/ComfyUI-Florence2-Vision.git "$CUSTOM_NODES_PATH/ComfyUI-Florence2-Vision"
+        cd "$CUSTOM_NODES_PATH/ComfyUI-Florence2-Vision"
+        git checkout 0c624e61b6606801751bd41d93a09abe9844bea7
+        pip install -r requirements.txt
+    fi
+
+    # Install ComfyUI-StreamDiffusion
+    if [ ! -d "$CUSTOM_NODES_PATH/ComfyUI-StreamDiffusion/.git" ]; then
+        git clone https://github.com/pschroedl/ComfyUI-StreamDiffusion.git "$CUSTOM_NODES_PATH/ComfyUI-StreamDiffusion"
+        cd "$CUSTOM_NODES_PATH/ComfyUI-StreamDiffusion"
+        git checkout f93b98aa9f20ab46c23d149ad208d497cd496579
+        pip install -r requirements.txt
+    fi
+
+    # Install ComfyUI-LivePortraitKJ
+    if [ ! -d "$CUSTOM_NODES_PATH/ComfyUI-LivePortraitKJ/.git" ]; then
+        git clone https://github.com/kijai/ComfyUI-LivePortraitKJ.git "$CUSTOM_NODES_PATH/ComfyUI-LivePortraitKJ"
+        cd "$CUSTOM_NODES_PATH/ComfyUI-LivePortraitKJ"
+        git checkout 4d9dc6205b793ffd0fb319816136d9b8c0dbfdff
+        pip install -r requirements.txt
+    fi
+
+    # Install ComfyUI-load-image-from-url
+    if [ ! -d "$CUSTOM_NODES_PATH/ComfyUI-load-image-from-url/.git" ]; then
+        git clone https://github.com/tsogzark/ComfyUI-load-image-from-url.git "$CUSTOM_NODES_PATH/ComfyUI-load-image-from-url"
+    fi
+}
+
+# Install custom nodes
+install_custom_nodes
+
 # Return to base environment
 echo "🔄 Deactivating comfystream environment..."
 conda deactivate
