@@ -200,6 +200,24 @@ Copying tensor utils...
     conda deactivate
     & "$env:USERPROFILE\miniconda3\shell\condabin\conda-hook.ps1"
 
+    # Downgrade huggingface-hub in both environments
+    Write-Host "
+------------------------------------------
+Downgrading huggingface-hub...
+------------------------------------------"
+    
+    # Downgrade in comfyui environment
+    Write-Host "Downgrading huggingface-hub in comfyui environment..."
+    conda activate comfyui
+    conda run -n comfyui pip install huggingface-hub==0.25.0
+    conda deactivate
+
+    # Downgrade in comfystream environment
+    Write-Host "Downgrading huggingface-hub in comfystream environment..."
+    conda activate comfystream
+    conda run -n comfystream pip install huggingface-hub==0.25.0
+    conda deactivate
+
     Write-Host "
 ==========================================
 Setup Complete!

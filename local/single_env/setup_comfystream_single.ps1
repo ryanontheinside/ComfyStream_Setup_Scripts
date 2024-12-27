@@ -199,6 +199,15 @@ Installing Additional Custom Nodes for $EnvName...
     # Install custom nodes
     Install-CustomNodes -EnvName "comfystream" -CustomNodesPath "$workspacePath\ComfyUI\custom_nodes"
 
+    # Downgrade huggingface-hub
+    Write-Host "
+------------------------------------------
+Downgrading huggingface-hub...
+------------------------------------------"
+    conda activate comfystream
+    pip install huggingface-hub==0.25.0
+    conda deactivate
+
     Write-Host "
 ==========================================
 Setup Complete!

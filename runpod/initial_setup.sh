@@ -352,3 +352,23 @@ install_custom_nodes "comfyui"
 # After setting up comfystream environment and its base requirements
 echo "Installing custom nodes for comfystream environment..."
 install_custom_nodes "comfystream"
+
+# Downgrade huggingface-hub in both environments
+echo "
+----------------------------------------
+🔧 Downgrading huggingface-hub in both environments...
+----------------------------------------"
+
+# Downgrade in comfyui environment
+echo "Downgrading huggingface-hub in comfyui environment..."
+conda activate comfyui
+pip install huggingface-hub==0.25.0
+conda deactivate
+
+# Downgrade in comfystream environment
+echo "Downgrading huggingface-hub in comfystream environment..."
+conda activate comfystream
+pip install huggingface-hub==0.25.0
+conda deactivate
+
+echo "✅ Completed huggingface-hub downgrade in both environments"

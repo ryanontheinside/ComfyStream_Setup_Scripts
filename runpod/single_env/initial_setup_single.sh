@@ -228,3 +228,17 @@ conda deactivate
 echo "✅ Successfully deactivated comfystream environment"
 echo "✅ Setup complete!"
 set +x  # Disable debug mode
+
+# Downgrade huggingface-hub
+echo "
+----------------------------------------
+🔧 Downgrading huggingface-hub...
+----------------------------------------"
+echo "Downgrading huggingface-hub in comfystream environment..."
+conda activate comfystream
+pip install huggingface-hub==0.25.0
+conda deactivate
+
+echo "✅ Completed huggingface-hub downgrade"
+
+set +x  # Disable debug mode
