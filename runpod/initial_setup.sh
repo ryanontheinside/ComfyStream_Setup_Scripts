@@ -189,6 +189,13 @@ pip install -r requirements.txt
 PIP_REQ_RESULT=$?
 echo "Pip requirements install exit code: $PIP_REQ_RESULT"
 
+# Install RealTimeNodes requirements for second installation
+if [ -f "/workspace/comfyRealtime/ComfyUI/custom_nodes/ComfyUI_RealTimeNodes/requirements.txt" ]; then
+    echo "📦 Installing RealTimeNodes requirements for second installation..."
+    cd /workspace/comfyRealtime/ComfyUI/custom_nodes/ComfyUI_RealTimeNodes
+    pip install -r requirements.txt
+fi
+
 echo "🔧 Running ComfyStream install script..."
 python install.py --workspace /workspace/comfyRealtime/ComfyUI
 INSTALL_RESULT=$?
@@ -248,6 +255,13 @@ pip install -r requirements.txt
 cd custom_nodes/ComfyUI-Manager
 echo "📦 Installing ComfyUI-Manager requirements..."
 pip install -r requirements.txt
+
+# Install RealTimeNodes requirements for first installation
+if [ -f "/workspace/ComfyUI/custom_nodes/ComfyUI_RealTimeNodes/requirements.txt" ]; then
+    echo "📦 Installing RealTimeNodes requirements for first installation..."
+    cd /workspace/ComfyUI/custom_nodes/ComfyUI_RealTimeNodes
+    pip install -r requirements.txt
+fi
 
 # Return to base environment
 echo "🔄 Deactivating comfyui environment..."

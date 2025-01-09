@@ -103,6 +103,12 @@ Copying ComfyUI-Manager to second installation...
     } else {
         Write-Host "ComfyUI RealTimeNodes already exists in first installation, skipping clone..."
     }
+    
+    # Install requirements for first install
+    if (Test-Path "$comfyUIPath\custom_nodes\ComfyUI_RealTimeNodes\requirements.txt") {
+        Write-Host "Installing RealTimeNodes requirements for first installation..."
+        conda run -n comfyui pip install -r "$comfyUIPath\custom_nodes\ComfyUI_RealTimeNodes\requirements.txt"
+    }
 
     # Copy RealTimeNodes to second install
     Write-Host "
@@ -113,6 +119,12 @@ Copying ComfyUI-Manager to second installation...
         Copy-Item -Path "$comfyUIPath\custom_nodes\ComfyUI_RealTimeNodes" -Destination "$realtimePath\ComfyUI\custom_nodes\" -Recurse
     } else {
         Write-Host "ComfyUI RealTimeNodes already exists in second installation, skipping copy..."
+    }
+
+    # Install requirements for second install
+    if (Test-Path "$realtimePath\ComfyUI\custom_nodes\ComfyUI_RealTimeNodes\requirements.txt") {
+        Write-Host "Installing RealTimeNodes requirements for second installation..."
+        conda run -n comfystream pip install -r "$realtimePath\ComfyUI\custom_nodes\ComfyUI_RealTimeNodes\requirements.txt"
     }
 
     # Download models if requested
